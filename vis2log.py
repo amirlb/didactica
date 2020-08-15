@@ -1,4 +1,6 @@
 import sys
+import html
+from bidi.algorithm import get_display
 
 HEB = set('אבגדהוזחטיככלמנסעפצקרשתךםןףץ')
 
@@ -10,7 +12,9 @@ def fix_line(line):
         return line
     start = heb_inds[0]
     end = heb_inds[-1] + 1
-    return line[:start] + line[start:end][::-1] + line[end:]
+    heb = html.unescape(line[start:end][::-1])
+    heb = get_display(heb)
+    return line[:start] + html.escape(heb) + line[end:]
 
 lines = list(open(sys.argv[1]))
 lines = map(fix_line, lines)
